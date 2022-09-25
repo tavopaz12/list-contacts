@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body{
+        margin: 0px;
+      }
+      header{
+        color: white;
+        padding: 15px;
+        background-color: black;
+        border-bottom: 4px solid rgb(127, 238, 195);
+      }
+      h1{
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>MIS CONTACTOS</h1>
+    </header>
+    <br />
+    <pw-contactos></pw-contactos>
+    <script type="module">
+      import {
+        LitElement,
+        html,
+        css,
+      } from "https://unpkg.com/lit@2.3.1/index.js?module";
+
+      class PwContactos extends LitElement {
+        render() {
+          return html`
+            <form @submit=${this.onSubmit}>
+              <input type="text" placeholder="Nombre" name="name" required />
+              <pre></pre>
+              <input
+                type="text"
+                placeholder="Apellido Paterno"
+                name="lastName"
+                required
+              />
+              <pre></pre>
+              <input type="text" placeholder="Email" name="email" required />
+              <pre></pre>
+              <input
+                type="tel"
+                placeholder="Telefono"
+                name="telefono"
+                required
+              />
+              <pre></pre>
+              <button>+ Agregar Contacto</button>
+            </form>
+            <table>
+              <thead>
+                <tr>
+                  <th>NOMBRE</th>
+                  <th>APELLIDO</th>
+                  <th>EMAIL</th>
+                  <th>TELEFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${this.contacts.map((item) => {
+                  return html`
+                    <tr>
+                      <td>${item.name}</td>
+                      <td>${item.lastName}</td>
+                      <td>${item.email}</td>
+                      <td>${item.telefono}</td>
+                    </tr>
+                  `;
+                })}
+              </tbody>
+            </table>
+          `;
+        }
+
+        constructor() {
+          super();
+          this.contacts = [];
+        }
+
+        static get properties() {
+          return {
+            contacts: { type: Array },
+          };
+        }
+
+        static get styles() {
+          return css`
+            form {
+              margin: 20px;
+              display: flex;
+              margin-bottom: 30px;
+              gap: 10px;
+            }
+            button {
+              background-color: rgb(13, 112, 43);
+              font-weight: bold;
+              padding: 10px;
+              border: none;
+              border-radius: 10px;
+              cursor: pointer;
+              color: white;
+            }
+            input {
+              width: 15%;
+              border: 1px solid gray;
+              border-radius: 2px;
+            }
+            table th {
+              width: 5%;
+              padding: 20px;
+              text-align: center;
+              border-bottom: 2px solid black;
+            }
+            table td {
+              text-align: center;
+              padding: 10px;
+              font-size: 20px;
+            }
+          `;
+        }
+
+        onSubmit(event) {
+          event.preventDefault();
+          const data = new FormData(event.target);
+          const newContact = {
+            name: data.get("name"),
+            lastName: data.get("lastName"),
+            email: data.get("email"),
+            telefono: data.get("telefono"),
+          };
+          event.target.reset();
+          this.contacts = [...this.contacts, newContact];
+
+          function sortArray(x, y) {
+            return x.lastName.localeCompare(y.lastName);
+          }
+          var s = this.contacts.sort(sortArray);
+          console.log(s);
+        }
+      }
+
+      customElements.define("pw-contactos", PwContactos);
+    </script>
+  </body>
+</html>
